@@ -22,7 +22,8 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
-  }
+  },
+  description: String
 })
 
 UserSchema.methods = {

@@ -6,6 +6,10 @@ const CommentSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: "User"
+  },
+  deck: {
+    type: Schema.Types.ObjectId,
+    ref: "Deck"
   }
 })
 
