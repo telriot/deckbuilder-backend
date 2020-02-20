@@ -3,6 +3,7 @@ const router = express.Router()
 const Deck = require("../models/Deck")
 const User = require("../models/User")
 const Comment = require("../models/Comment")
+const Match = require("../models/Match")
 const { check, validationResult } = require("express-validator")
 const { isLoggedIn, isDeckAuthor } = require("../middleware")
 
@@ -12,6 +13,15 @@ router.get("/:id", async (req, res) => {
     const deck = await Deck.findById(req.params.id)
       .populate({
         path: "comments",
+        options: { sort: { _id: -1 } },
+        populate: {
+          path: "author",
+          model: "User",
+          select: "-password"
+        }
+      })
+      .populate({
+        path: "matches",
         options: { sort: { _id: -1 } },
         populate: {
           path: "author",
@@ -62,7 +72,58 @@ router.post(
             mainboard,
             sideboard,
             author,
-            authorUsername: author.username
+            authorUsername: author.username,
+            matchups: {
+              aggro: {
+                archetype: "Aggro",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              disruptive: {
+                archetype: "Disruptive",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              midrange: {
+                archetype: "Midrange",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              combo: {
+                archetype: "Combo",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              combocontrol: {
+                archetype: "Combo-control",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              control: {
+                archetype: "Control",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              ramp: {
+                archetype: "Ramp",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              },
+              others: {
+                archetype: "Others",
+                preboard: { w: 0, l: 0, u: 0 },
+                postboard: { w: 0, l: 0, u: 0 },
+                total: { w: 0, l: 0, u: 0 }
+              }
+            },
+            matches: []
           })
           console.log(newDeck)
           newDeck.save((err, savedDeck) => {

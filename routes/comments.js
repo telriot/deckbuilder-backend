@@ -15,6 +15,7 @@ router.post("/", isLoggedIn, async function(req, res, next) {
       author: req.user._id,
       deck: deck
     })
+    console.log(comment)
     await deck.comments.push(comment)
     await deck.save()
     res.json("comment successfully posted")

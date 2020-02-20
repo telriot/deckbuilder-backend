@@ -1,11 +1,18 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const CommentSchema = new Schema({
-  text: String,
+const MatchSchema = new Schema({
+  archetype: String,
+  matchupDeck: String,
+  comment: String,
   author: {
     type: Schema.Types.ObjectId,
     ref: "User"
+  },
+  result: {
+    g1: String,
+    g2: String,
+    g3: String
   },
   deck: {
     type: Schema.Types.ObjectId,
@@ -17,4 +24,4 @@ const CommentSchema = new Schema({
   }
 })
 
-module.exports = mongoose.model("Comment", CommentSchema)
+module.exports = mongoose.model("Match", MatchSchema)
