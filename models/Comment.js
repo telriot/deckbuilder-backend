@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const mongoosePaginate = require("mongoose-paginate")
 const Schema = mongoose.Schema
 
 const CommentSchema = new Schema({
@@ -7,6 +8,7 @@ const CommentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   },
+  authorUsername: String,
   deck: {
     type: Schema.Types.ObjectId,
     ref: "Deck"
@@ -17,4 +19,5 @@ const CommentSchema = new Schema({
   }
 })
 
+CommentSchema.plugin(mongoosePaginate)
 module.exports = mongoose.model("Comment", CommentSchema)

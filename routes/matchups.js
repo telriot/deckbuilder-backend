@@ -4,6 +4,31 @@ const Deck = require("../models/Deck")
 const Match = require("../models/Match")
 const { isLoggedIn } = require("../middleware")
 
+/*GET an individual match by its ID */
+router.get("/:id", async function(req, res, next) {
+  try {
+    let match = await Match.findById({ _id: req.params.id })
+    res.send(match)
+  } catch (error) {
+    console.error(error.message)
+  }
+})
+
+/*GET /decks/:id/matchups using Deck ID */
+router.get("/", async function(req, res, next) {
+  try {
+    console.log(req.query)
+    let matches = await Match.paginate(
+      { deck: req.query.deckId },
+      { sort: { date: -1 }, page: req.query.page || 1, limit: 10 }
+    )
+    res.send(matches)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Server Error")
+  }
+})
+
 /*POST /decks/:id/matchups CREATE Matchup record */
 
 router.post("/", isLoggedIn, async function(req, res, next) {
@@ -98,5 +123,21 @@ router.put("/", isLoggedIn, async function(req, res, next) {
 })
 
 /*POST /decks/:id/Matchups/:Matchup_id Destroy Matchup */
+
+router.post("/:id", async function(req, res, next) {
+  try {
+    const { deckId, matchId } = req.body
+    let deck = await Deck.findOneAndUpdate(
+      { _id: deckId },
+      { $pull: { matches: { _id: matchId } } }
+    )
+    console.log(deck.name, "deck")
+    await Match.findOneAndDelete({ _id: matchId })
+    res.send("removed")
+  } catch (error) {
+    console.error(error.message)
+    res.status(500).send("Server Error")
+  }
+})
 
 module.exports = router

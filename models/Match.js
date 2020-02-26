@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const mongoosePaginate = require("mongoose-paginate")
 const Schema = mongoose.Schema
 
 const MatchSchema = new Schema({
@@ -24,4 +25,5 @@ const MatchSchema = new Schema({
   }
 })
 
+MatchSchema.plugin(mongoosePaginate)
 module.exports = mongoose.model("Match", MatchSchema)

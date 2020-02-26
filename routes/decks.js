@@ -176,6 +176,8 @@ router.delete("/:id", isDeckAuthor, async function(req, res, next) {
     res.json("deck successfully removed")
     await Comment.deleteMany({ deck: req.params.id })
     res.json("comments successfully removed")
+    await Match.deleteMany({ deck: req.params.id })
+    res.json("matches successfully removed")
   } catch (error) {
     console.log(error)
     res.status(500).send("Server Error")
