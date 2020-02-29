@@ -4,7 +4,7 @@ const User = require("../models/User")
 
 // called on login, saves the id to session req.session.passport.user = {id:'..'}
 passport.serializeUser((user, done) => {
-  done(null, { _id: user._id, email: user.email, username: user.username })
+  done(null, { _id: user._id, username: user.username })
 })
 
 // user object attaches to the request as req.user

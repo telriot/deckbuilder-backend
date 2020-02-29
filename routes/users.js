@@ -3,6 +3,7 @@ const router = express.Router()
 const User = require("../models/User")
 const Deck = require("../models/Deck")
 const { isProfileOwner } = require("../middleware")
+const { editProfileValidationRules, validate } = require("../middleware")
 
 /* GET /:id user by Id . */
 router.get("/:id", async (req, res, next) => {
@@ -26,19 +27,13 @@ router.get("/:id/decks", async (req, res, next) => {
 })
 
 /* PUT /:id update user profile */
-router.put("/:id", isProfileOwner, async (req, res, next) => {
-  const {
-    description,
-    mtgoUsername,
-    arenaUsername,
-    email,
-    dciNumber,
-    country,
-    city
-  } = req.body
-
-  try {
-    const user = await User.findByIdAndUpdate(req.params.id, {
+router.put(
+  "/:id",
+  isProfileOwner,
+  editProfileValidationRules(),
+  validate,
+  async (req, res, next) => {
+    const {
       description,
       mtgoUsername,
       arenaUsername,
@@ -46,12 +41,24 @@ router.put("/:id", isProfileOwner, async (req, res, next) => {
       dciNumber,
       country,
       city
-    })
-    res.json(user)
-  } catch (error) {
-    console.log(error)
-    res.status(500).send("Server Error")
+    } = req.body
+
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        description,
+        mtgoUsername,
+        arenaUsername,
+        email,
+        dciNumber,
+        country,
+        city
+      })
+      res.json(user)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send("Server Error")
+    }
   }
-})
+)
 
 module.exports = router

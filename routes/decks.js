@@ -54,7 +54,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() })
     }
-    const { name, format, mainboard, sideboard } = req.body
+    const { name, format, mainboard, sideboard, colors } = req.body
     try {
       const author = await User.findById(req.user._id)
       console.log(author)
@@ -72,6 +72,7 @@ router.post(
             mainboard,
             sideboard,
             author,
+            colors,
             authorUsername: author.username,
             matchups: {
               aggro: {
@@ -155,11 +156,11 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() })
     }
-    const { name, format, mainboard, sideboard } = req.body
+    const { name, format, mainboard, sideboard, colors } = req.body
     try {
       await Deck.findOneAndUpdate(
         { _id: req.params.id },
-        { name, format, mainboard, sideboard }
+        { name, format, mainboard, sideboard, colors }
       )
     } catch (error) {
       console.log(error)

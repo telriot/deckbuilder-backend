@@ -17,6 +17,7 @@ const DeckSchema = new Schema({
   sideboard: {
     type: Array
   },
+  colors: { type: Array },
   /* commander: {
     type: String
   },*/

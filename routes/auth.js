@@ -3,6 +3,7 @@ const router = express.Router()
 const User = require("../models/User")
 const passport = require("passport")
 const { body, check, validationResult } = require("express-validator")
+const { userValidationRules, validate } = require("../middleware")
 
 /* GET /  user? request */
 router.get("/", (req, res, next) => {
@@ -21,40 +22,15 @@ router.get("/", (req, res, next) => {
 router.post(
   "/signup",
   // Validators
-  [
-    body("passwordConfirmation").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Password confirmation does not match password")
-      }
-      console.log("confirmationvalidation")
-
-      return true
-    }),
-    body("password").custom(value => {
-      let passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/
-      if (!value.match(passw)) {
-        throw new Error("Password is not valid")
-      }
-      console.log("passvalidation")
-
-      return true
-    }),
-    body("username").custom(value => {
-      let usr = /^[A-Za-z]\w{4,14}$/
-      if (!value.match(usr)) {
-        throw new Error("Username is not valid")
-      }
-      console.log("uservalidation")
-      return true
-    })
-  ],
+  userValidationRules(),
+  validate,
   async (req, res, next) => {
-    //User in DB validation
-    const { password, username } = req.body
+    const { password, username, email } = req.body
     try {
       await User.findOne({ username }, (err, user) => {
         if (err) {
         } else if (user) {
+          console.log("username already in use")
           res.json({
             error: `The username '${username}' is already in use`
           })
@@ -62,13 +38,17 @@ router.post(
           //Save user to the DB
           const newUser = new User({
             username: username,
-            password: password
+            password: password,
+            email: email
           })
           newUser.save((err, savedUser) => {
-            if (err) return res.json(err)
-            res.json(savedUser)
+            if (err) {
+              console.log(err)
+              return res.json(err)
+            } else {
+              res.json(savedUser)
+            }
           })
-          console.log("newUser saved")
         }
       })
     } catch (error) {
@@ -97,7 +77,7 @@ router.post("/logout", (req, res) => {
     res.send({ msg: "logging out" })
   } else {
     res.send({ msg: "no user to log out" })
-    console.log("no user for logging out")
+    console.log("no user to log out")
   }
 })
 
