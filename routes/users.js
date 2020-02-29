@@ -27,10 +27,25 @@ router.get("/:id/decks", async (req, res, next) => {
 
 /* PUT /:id update user profile */
 router.put("/:id", isProfileOwner, async (req, res, next) => {
-  const { description } = req.body
+  const {
+    description,
+    mtgoUsername,
+    arenaUsername,
+    email,
+    dciNumber,
+    country,
+    city
+  } = req.body
+
   try {
     const user = await User.findByIdAndUpdate(req.params.id, {
-      description
+      description,
+      mtgoUsername,
+      arenaUsername,
+      email,
+      dciNumber,
+      country,
+      city
     })
     res.json(user)
   } catch (error) {

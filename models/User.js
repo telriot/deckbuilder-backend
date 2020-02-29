@@ -8,17 +8,22 @@ mongoose.promise = Promise
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   email: {
     type: String,
-    unique: true,
-    required: true
+    unique: true
   },
   password: {
     type: String,
     required: true
   },
+  dciNumber: String,
+  arenaUsername: String,
+  mtgoUsername: String,
+  country: String,
+  city: String,
   date: {
     type: Date,
     default: Date.now

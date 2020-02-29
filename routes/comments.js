@@ -7,7 +7,6 @@ const { isLoggedIn, isCommentAuthor } = require("../middleware")
 /*GET /decks/:id/comments using Deck ID */
 router.get("/", async function(req, res, next) {
   try {
-    console.log(req.query)
     let comments = await Comment.paginate(
       { deck: req.query.deckId },
       { sort: { date: -1 }, page: req.query.page || 1, limit: 5 }
@@ -31,7 +30,6 @@ router.post("/", isLoggedIn, async function(req, res, next) {
       authorUsername: req.body.authorUsername,
       deck: deck
     })
-    console.log(comment)
     await deck.comments.push(comment)
     await deck.save()
     res.json("comment successfully posted")
@@ -57,11 +55,10 @@ router.put("/:comment_id", isCommentAuthor, async function(req, res, next) {
 router.post("/:comment_id", isCommentAuthor, async function(req, res, next) {
   try {
     const { deckId, commentId } = req.body
-    let deck = await Deck.findOneAndUpdate(
+    await Deck.findOneAndUpdate(
       { _id: deckId },
       { $pull: { comments: { _id: commentId } } }
     )
-    console.log(deck.name, "deck")
     await Comment.findOneAndDelete({ _id: commentId })
     res.send("removed")
   } catch (error) {

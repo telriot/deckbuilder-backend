@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const User = require("../models/User")
 const passport = require("passport")
+const { body, check, validationResult } = require("express-validator")
 
 /* GET /  user? request */
 router.get("/", (req, res, next) => {
@@ -17,34 +18,65 @@ router.get("/", (req, res, next) => {
 })
 
 /* POST signup request */
-router.post("/signup", async function(req, res, next) {
-  // Validation
-  const { email, password, username } = req.body
-  try {
-    await User.findOne({ email }, (err, user) => {
-      if (err) {
-      } else if (user) {
-        res.json({
-          error: `The email address '${email}' is already in use`
-        })
-      } else {
-        //Save user to the DB
-        const newUser = new User({
-          username: username,
-          email: email,
-          password: password
-        })
-        newUser.save((err, savedUser) => {
-          if (err) return res.json(err)
-          res.json(savedUser)
-        })
+router.post(
+  "/signup",
+  // Validators
+  [
+    body("passwordConfirmation").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Password confirmation does not match password")
       }
+      console.log("confirmationvalidation")
+
+      return true
+    }),
+    body("password").custom(value => {
+      let passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/
+      if (!value.match(passw)) {
+        throw new Error("Password is not valid")
+      }
+      console.log("passvalidation")
+
+      return true
+    }),
+    body("username").custom(value => {
+      let usr = /^[A-Za-z]\w{4,14}$/
+      if (!value.match(usr)) {
+        throw new Error("Username is not valid")
+      }
+      console.log("uservalidation")
+      return true
     })
-  } catch (error) {
-    console.log(error)
-    res.status(500).send("Server Error")
+  ],
+  async (req, res, next) => {
+    //User in DB validation
+    const { password, username } = req.body
+    try {
+      await User.findOne({ username }, (err, user) => {
+        if (err) {
+        } else if (user) {
+          res.json({
+            error: `The username '${username}' is already in use`
+          })
+        } else {
+          //Save user to the DB
+          const newUser = new User({
+            username: username,
+            password: password
+          })
+          newUser.save((err, savedUser) => {
+            if (err) return res.json(err)
+            res.json(savedUser)
+          })
+          console.log("newUser saved")
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).send("Server Error")
+    }
   }
-})
+)
 
 /* POST login request */
 router.post("/login", passport.authenticate("local"), (req, res) => {

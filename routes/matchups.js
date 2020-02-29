@@ -17,9 +17,16 @@ router.get("/:id", async function(req, res, next) {
 /*GET /decks/:id/matchups using Deck ID */
 router.get("/", async function(req, res, next) {
   try {
-    console.log(req.query)
+    var regex = new RegExp(`${req.query.matchupDeck}`, "i")
+    console.log(regex)
     let matches = await Match.paginate(
-      { deck: req.query.deckId },
+      {
+        deck: req.query.deckId,
+        archetype: req.query.archetype
+          ? req.query.archetype
+          : { $exists: true },
+        matchupDeck: req.query.matchupDeck ? regex : { $exists: true }
+      },
       { sort: { date: -1 }, page: req.query.page || 1, limit: 10 }
     )
     res.send(matches)
@@ -45,7 +52,6 @@ router.post("/", isLoggedIn, async function(req, res, next) {
       result: { g1: result.g1, g2: result.g2, g3: result.g3 },
       deck
     })
-    console.log(match)
     await deck.matches.push(match)
     await deck.save()
     res.json("matchup successfully posted")
@@ -127,11 +133,10 @@ router.put("/", isLoggedIn, async function(req, res, next) {
 router.post("/:id", async function(req, res, next) {
   try {
     const { deckId, matchId } = req.body
-    let deck = await Deck.findOneAndUpdate(
+    await Deck.findOneAndUpdate(
       { _id: deckId },
       { $pull: { matches: { _id: matchId } } }
     )
-    console.log(deck.name, "deck")
     await Match.findOneAndDelete({ _id: matchId })
     res.send("removed")
   } catch (error) {
