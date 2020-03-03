@@ -14,6 +14,7 @@ const authRouter = require("./routes/auth")
 const decksRouter = require("./routes/decks")
 const commentsRouter = require("./routes/comments")
 const matchupsRouter = require("./routes/matchups")
+const sideguidesRouter = require("./routes/sideguides")
 
 const app = express()
 
@@ -58,5 +59,6 @@ app.use("/api/auth", authRouter)
 app.use("/api/decks", decksRouter)
 app.use("/api/decks/:id/comments", commentsRouter)
 app.use("/api/decks/:id/matchups", matchupsRouter)
+app.use("/api/decks/:id/sideguides", sideguidesRouter)
 
 module.exports = app

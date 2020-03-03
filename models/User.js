@@ -28,7 +28,10 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  description: String
+  description: String,
+  twitter: String,
+  twitch: String,
+  youtube: String
 })
 
 UserSchema.methods = {

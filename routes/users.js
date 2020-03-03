@@ -40,7 +40,10 @@ router.put(
       email,
       dciNumber,
       country,
-      city
+      city,
+      twitter,
+      twitch,
+      youtube
     } = req.body
 
     try {
@@ -51,7 +54,10 @@ router.put(
         email,
         dciNumber,
         country,
-        city
+        city,
+        twitter,
+        twitch,
+        youtube
       })
       res.json(user)
     } catch (error) {

@@ -51,18 +51,17 @@ router.put("/:comment_id", isCommentAuthor, async function(req, res, next) {
   }
 })
 
-/*POST /decks/:id/comments/:comment_id Destroy comment */
+/*POST /decks/:id/comments/:comment_id/destroy Destroy Comment */
 router.post("/:comment_id", isCommentAuthor, async function(req, res, next) {
   try {
     const { deckId, commentId } = req.body
-    await Deck.findOneAndUpdate(
-      { _id: deckId },
-      { $pull: { comments: { _id: commentId } } }
-    )
+    const deck = await Deck.findOne({ _id: deckId })
+    await deck.comments.pull(commentId)
+    await deck.save()
     await Comment.findOneAndDelete({ _id: commentId })
     res.send("removed")
   } catch (error) {
-    console.error(error.message)
+    console.log(error)
     res.status(500).send("Server Error")
   }
 })

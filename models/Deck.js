@@ -93,7 +93,8 @@ const DeckSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "Match"
     }
-  ]
+  ],
+  sideGuides: [{ type: Schema.Types.ObjectId, ref: "SideGuide" }]
 })
 
 module.exports = mongoose.model("Deck", DeckSchema)

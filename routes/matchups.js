@@ -5,7 +5,7 @@ const Match = require("../models/Match")
 const { isLoggedIn } = require("../middleware")
 
 /*GET an individual match by its ID */
-router.get("/:id", async function(req, res, next) {
+router.get("/:id", async (req, res, next) => {
   try {
     let match = await Match.findById({ _id: req.params.id })
     res.send(match)
@@ -15,10 +15,9 @@ router.get("/:id", async function(req, res, next) {
 })
 
 /*GET /decks/:id/matchups using Deck ID */
-router.get("/", async function(req, res, next) {
+router.get("/", async (req, res, next) => {
   try {
     var regex = new RegExp(`${req.query.matchupDeck}`, "i")
-    console.log(regex)
     let matches = await Match.paginate(
       {
         deck: req.query.deckId,
@@ -38,7 +37,7 @@ router.get("/", async function(req, res, next) {
 
 /*POST /decks/:id/matchups CREATE Matchup record */
 
-router.post("/", isLoggedIn, async function(req, res, next) {
+router.post("/", isLoggedIn, async (req, res, next) => {
   try {
     const { matchupDeck, comment, result, deckId, archetype } = req.body
     let deck = await Deck.findOne({ _id: deckId })
@@ -62,7 +61,7 @@ router.post("/", isLoggedIn, async function(req, res, next) {
 })
 
 /* PUT /:id/matchups Update a deck's matchup sheet*/
-router.put("/", isLoggedIn, async function(req, res, next) {
+router.put("/", isLoggedIn, async (req, res, next) => {
   const { matchup, deckId } = req.body
 
   try {
@@ -130,17 +129,17 @@ router.put("/", isLoggedIn, async function(req, res, next) {
 
 /*POST /decks/:id/Matchups/:Matchup_id Destroy Matchup */
 
-router.post("/:id", async function(req, res, next) {
+router.post("/:id", async (req, res, next) => {
   try {
     const { deckId, matchId } = req.body
-    await Deck.findOneAndUpdate(
-      { _id: deckId },
-      { $pull: { matches: { _id: matchId } } }
-    )
+
+    const deck = await Deck.findOne({ _id: deckId })
+    await deck.matches.pull(matchId)
+    await deck.save()
     await Match.findOneAndDelete({ _id: matchId })
     res.send("removed")
   } catch (error) {
-    console.error(error.message)
+    console.error(error)
     res.status(500).send("Server Error")
   }
 })
