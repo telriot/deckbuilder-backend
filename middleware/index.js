@@ -81,7 +81,7 @@ module.exports = {
 
   editProfileValidationRules: () => {
     return [
-      body("email").custom(value => {
+      body("user.email").custom(value => {
         const emailregex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if (!value.match(emailregex)) {
           throw new Error("Not a valid email address")
@@ -89,7 +89,7 @@ module.exports = {
           return true
         }
       }),
-      body("dciNumber")
+      body("user.dciNumber")
         .isLength({ max: 10 })
         .custom(value => {
           const dciRegex = /^\d+$/
@@ -99,17 +99,17 @@ module.exports = {
             return true
           }
         }),
-      body("mtgoUsername")
+      body("user.mtgoUsername")
         .isString()
         .isLength({ max: 20 })
         .withMessage("Not a valid MTGO Username"),
-      body("arenaUsername")
+      body("user.arenaUsername")
         .isString()
         .isLength({ max: 20 })
         .withMessage("Not a valid Arena Username"),
-      body("country").isString(),
-      body("city").isString(),
-      body("description")
+      body("user.country").isString(),
+      body("user.city").isString(),
+      body("user.description")
         .isString()
         .isLength({ max: 500 })
         .withMessage("Please keep your description within 500 characters")

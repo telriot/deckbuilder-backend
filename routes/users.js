@@ -44,7 +44,7 @@ router.put(
       twitter,
       twitch,
       youtube
-    } = req.body
+    } = req.body.user
 
     try {
       const user = await User.findByIdAndUpdate(req.params.id, {
