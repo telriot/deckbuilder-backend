@@ -18,7 +18,16 @@ router.get("/:id", async (req, res, next) => {
 
 router.get("/:id/decks", async (req, res, next) => {
   try {
-    const decks = await Deck.find({ author: req.params.id })
+    const { author, page, sortOrder } = req.query
+    console.log(req.query)
+    const decks = await Deck.paginate(
+      { author: author },
+      {
+        sort: { [sortOrder]: -1 },
+        page: page || 1,
+        limit: 12
+      }
+    )
     res.json(decks)
   } catch (error) {
     console.log(error)

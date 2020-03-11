@@ -9,7 +9,7 @@ router.get("/", async function(req, res, next) {
   try {
     let comments = await Comment.paginate(
       { deck: req.query.deckId },
-      { sort: { date: -1 }, page: req.query.page || 1, limit: 5 }
+      { sort: { date: -1 }, page: req.query.page || 1, limit: 10 }
     )
     res.send(comments)
   } catch (error) {
