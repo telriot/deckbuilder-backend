@@ -33,7 +33,8 @@ const UserSchema = new Schema({
   description: String,
   twitter: String,
   twitch: String,
-  youtube: String
+  youtube: String,
+  avatar: String
 })
 
 UserSchema.methods = {

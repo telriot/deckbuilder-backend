@@ -52,7 +52,8 @@ router.put(
       city,
       twitter,
       twitch,
-      youtube
+      youtube,
+      avatar
     } = req.body.user
 
     try {
@@ -66,7 +67,8 @@ router.put(
         city,
         twitter,
         twitch,
-        youtube
+        youtube,
+        avatar
       })
       res.json(user)
     } catch (error) {
