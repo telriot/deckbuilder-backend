@@ -15,11 +15,13 @@ const decksRouter = require("./routes/decks")
 const commentsRouter = require("./routes/comments")
 const matchupsRouter = require("./routes/matchups")
 const sideguidesRouter = require("./routes/sideguides")
+const cors = require("cors")
+
 /*const Card = require("./models/Card")
 const cardData = require("/home/benjo/CODE/deckbuilder/backend/cardData/scryfall-default-cards.json")*/
 
 const app = express()
-
+app.use(cors())
 // Connect to the db, fix deprecations
 mongoose.connect(
   process.env.MONGO_URI || "mongodb://localhost:27017/deckbuilder",
