@@ -22,7 +22,7 @@ const app = express()
 
 // Connect to the db, fix deprecations
 mongoose.connect(
-  process.env.MONGO_URI /*"mongodb://localhost:27017/deckbuilder"*/,
+  process.env.MONGO_URI || "mongodb://localhost:27017/deckbuilder",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
