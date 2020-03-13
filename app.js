@@ -1,5 +1,4 @@
 require("dotenv").config()
-const fs = require("fs")
 const express = require("express")
 const path = require("path")
 const cookieParser = require("cookie-parser")
@@ -22,10 +21,13 @@ const cardData = require("/home/benjo/CODE/deckbuilder/backend/cardData/scryfall
 const app = express()
 
 // Connect to the db, fix deprecations
-mongoose.connect("mongodb://localhost:27017/deckbuilder", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(
+  process.env.MONGO_URI /*"mongodb://localhost:27017/deckbuilder"*/,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+)
 const db = mongoose.connection
 db.on("error", console.error.bind(console, "connection error:"))
 db.once("open", function() {
